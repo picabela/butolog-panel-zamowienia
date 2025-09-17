@@ -60,13 +60,10 @@ export default function RepairOrderForm() {
   const [isProcessing, setIsProcessing] = useState(false)
 
   const serviceTypes = [
-    { value: "shoes", label: "Naprawa obuwia", price: 50 },
-    { value: "electronics", label: "Naprawa elektroniki", price: 120 },
-    { value: "clothing", label: "Naprawa odzieży", price: 30 },
-    { value: "bags", label: "Naprawa toreb i plecaków", price: 40 },
+    { value: "repair", label: "Usługa naprawcza", price: 99 },
   ]
 
-  const selectedService = serviceTypes.find((s) => s.value === formData.serviceType)
+  const selectedService = serviceTypes[0] // Always use the single service
 
   const handleInputChange = (field: keyof FormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
@@ -193,7 +190,6 @@ export default function RepairOrderForm() {
       !formData.lastName ||
       !formData.email ||
       !formData.phone ||
-      !formData.serviceType ||
       !formData.returnPaczkomat
     ) {
       setError("Proszę wypełnić wszystkie wymagane pola")
@@ -228,7 +224,7 @@ export default function RepairOrderForm() {
       lastName: "",
       email: "",
       phone: "",
-      serviceType: "",
+      serviceType: "repair",
       description: "",
       returnPaczkomat: "",
     })
@@ -445,31 +441,19 @@ export default function RepairOrderForm() {
 
                 <Separator />
 
-                {/* Service Selection */}
+                {/* Service Information */}
                 <div className="space-y-4">
-                  <h3 className="text-lg font-medium">Wybór usługi</h3>
-                  <div className="space-y-2">
-                    <Label htmlFor="serviceType">Rodzaj usługi *</Label>
-                    <Select
-                      value={formData.serviceType}
-                      onValueChange={(value) => handleInputChange("serviceType", value)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Wybierz rodzaj naprawy" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {serviceTypes.map((service) => (
-                          <SelectItem key={service.value} value={service.value}>
-                            <div className="flex items-center justify-between w-full">
-                              <span>{service.label}</span>
-                              <Badge variant="secondary" className="ml-2">
-                                {service.price} zł
-                              </Badge>
-                            </div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                  <h3 className="text-lg font-medium">Usługa naprawcza</h3>
+                  <div className="bg-muted p-4 rounded-lg">
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium">Usługa naprawcza</span>
+                      <Badge variant="secondary" className="text-lg font-bold">
+                        99 zł brutto
+                      </Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-2">
+                      Profesjonalna naprawa z gwarancją jakości
+                    </p>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="description">Opis problemu</Label>
@@ -504,21 +488,20 @@ export default function RepairOrderForm() {
                 </div>
 
                 {/* Order Summary */}
-                {selectedService && (
-                  <>
-                    <Separator />
-                    <div className="bg-muted p-4 rounded-lg">
-                      <h3 className="font-medium mb-2">Podsumowanie zamówienia</h3>
-                      <div className="flex justify-between items-center">
-                        <span>{selectedService.label}</span>
-                        <span className="font-medium">{selectedService.price} zł</span>
-                      </div>
-                      <div className="text-xs text-muted-foreground mt-2">
-                        * Cena może ulec zmianie po ocenie przedmiotu
-                      </div>
-                    </div>
-                  </>
-                )}
+                <Separator />
+                <div className="bg-muted p-4 rounded-lg">
+                  <h3 className="font-medium mb-2">Podsumowanie zamówienia</h3>
+                  <div className="flex justify-between items-center">
+                    <span>Usługa naprawcza</span>
+                    <span className="font-medium text-lg">99 zł brutto</span>
+                  </div>
+                  <div className="text-xs text-muted-foreground mt-2">
+                    * Cena może ulec zmianie po ocenie przedmiotu
+                  </div>
+                </div>
+
+                {/* Hidden field for service type */}
+                <input type="hidden" value="repair" onChange={(e) => handleInputChange("serviceType", e.target.value)} />
 
                 {error && (
                   <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded-lg">
@@ -551,7 +534,7 @@ export default function RepairOrderForm() {
               <a href="#" className="hover:text-foreground">
                 Kontakt
               </a>
-            </div>
+                    </div>
           </div>
         </div>
       </footer>
